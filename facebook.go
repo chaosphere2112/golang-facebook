@@ -16,6 +16,8 @@ type AccessToken struct {
 
 func readHttpBody(response *http.Response) string {
 
+	fmt.Println("Reading body")
+
 	bodyBuffer := make([]byte, 1000)
 	var str string
 	
@@ -36,7 +38,7 @@ func readHttpBody(response *http.Response) string {
 
 //Converts a code to an Auth_Token
 func GetAccessToken(client_id string, code string, secret string, callbackUri string) AccessToken {
-	
+	fmt.Println("GetAccessToken")
 	//https://graph.facebook.com/oauth/access_token?client_id=YOUR_APP_ID&redirect_uri=YOUR_REDIRECT_URI&client_secret=YOUR_APP_SECRET&code=CODE_GENERATED_BY_FACEBOOK
 	response, err := http.Get("https://graph.facebook.com/oauth/access_token?client_id="+
 		client_id+"&redirect_uri="+callbackUri+
@@ -67,7 +69,7 @@ func GetAccessToken(client_id string, code string, secret string, callbackUri st
 }
 
 func GetMe(token AccessToken) string {
-
+	fmt.Println("Getting me")
 	response, err := getUncachedResponse("https://graph.facebook.com/me?access_token="+token.Token)
 
 	if err == nil {
@@ -91,7 +93,7 @@ func GetMe(token AccessToken) string {
 }
 
 func getUncachedResponse(uri string) (*http.Response, error) {
-
+	fmt.Println("Uncached response GET")
 	request, err := http.NewRequest("GET", uri, nil)
 
 	if err == nil {
@@ -109,7 +111,7 @@ func getUncachedResponse(uri string) (*http.Response, error) {
 }
 
 func getPhotoSource(token *AccessToken, photoId string) string {
-	
+	fmt.Println("Getting photo source")
 	response, err := getUncachedResponse("https://graph.facebook.com/"+photoId+"?access_token="+token.Token+"&fields=source")
 
 	if err == nil && response != nil {
@@ -142,7 +144,7 @@ func getPhotoSource(token *AccessToken, photoId string) string {
 
 func GetAlbumPhotos(token *AccessToken, albumId string)  []string {
 	response, err := getUncachedResponse("https://graph.facebook.com/"+albumId+"/photos?access_token="+token.Token+"&fields=images&limit=1000")
-
+	fmt.Println("Getting album photos")
 	if err == nil && response != nil {
 
 		body := readHttpBody(response)
@@ -204,7 +206,7 @@ func GetAlbumPhotos(token *AccessToken, albumId string)  []string {
 }
 
 func GetPhotos(token *AccessToken) []string {
-
+	fmt.Println("Getting photos")
 	response, err := getUncachedResponse("https://graph.facebook.com/me/albums?access_token="+token.Token+"&fields=id")
 
 	if err == nil && response != nil {
